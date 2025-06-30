@@ -1,0 +1,100 @@
+name: exchange_message_tracking
+enabled: true
+path: ./out/exchange_message_tracking.log
+eps: 10
+time_period: 6
+generator_type: template
+template:
+  - '{:%Y-%m-%dT%H:%M:%S.%f},{client_ip},{server_hostname},{server_ip},,{connector_id},{source},{event_id},{internal_message_id},{message_id},{recipient_address},,{recipient_status},{total_bytes},{msg_id},{sender_address},,{subject},,,'
+fields:
+  client_ip: func_randip
+  server_hostname:
+    - EXSVR01
+    - EXSVR02
+  server_ip: func_randip
+  connector_id:
+    - "Default Frontend EXSVR01"
+    - "Client Frontend EXSVR02"
+    - "Outbound to Office 365"
+  source:
+    - STOREDRIVER
+    - SMTP
+    - ROUTING
+    - AGENT
+    - DSN
+  event_id:
+    - RECEIVE
+    - SEND
+    - DELIVER
+    - FAIL
+    - SUBMIT
+    - EXPAND
+    - RESOLVE
+    - DEFER
+  internal_message_id: func_randint 1000000000000 9999999999999
+  message_id:
+    - "<1688077233.a1b2c3d4e5@bbc.co.uk>"
+    - "<SNT151-W69A9B8C7D6E5F4A3B2C1D0E9F90@yahoo.com>"
+    - "<DB8PR05MB62224B9A8C7D6E5F4A3B2C1D0@hedgehoganalytics.uk>"
+    - "<VI1PR0101MB1234567890ABCDEF@hmrc.gov.uk>"
+  recipient_address:
+    - matthew@bbc.co.uk
+    - lee@bbc.co.uk
+    - rob@bbc.co.uk
+    - ali@bbc.co.uk
+    - simon@bbc.co.uk
+    - dave@bbc.co.uk
+    - matthew@yahoo.com
+    - lee@yahoo.com
+    - rob@yahoo.com
+    - ali@yahoo.com
+    - simon@yahoo.com
+    - dave@yahoo.com
+    - matthew@hedgehoganalytics.uk
+    - lee@hedgehoganalytics.uk
+    - rob@hedgehoganalytics.uk
+    - ali@hedgehoganalytics.uk
+    - simon@hedgehoganalytics.uk
+    - dave@hedgehoganalytics.uk
+    - matthew@hmrc.gov.uk
+    - lee@hmrc.gov.uk
+    - rob@hmrc.gov.uk
+    - ali@hmrc.gov.uk
+    - simon@hmrc.gov.uk
+    - dave@hmrc.gov.uk
+  recipient_status:
+    - "250 2.1.5 Recipient OK"
+    - "550 5.1.1 User unknown"
+    - "451 4.4.0 Primary target IP address responded with..."
+  total_bytes: func_randint 500 2048000
+  msg_id: func_randint 1000000000000 9999999999999
+  sender_address:
+    - matthew@bbc.co.uk
+    - lee@bbc.co.uk
+    - rob@bbc.co.uk
+    - ali@bbc.co.uk
+    - simon@bbc.co.uk
+    - dave@bbc.co.uk
+    - matthew@yahoo.com
+    - lee@yahoo.com
+    - rob@yahoo.com
+    - ali@yahoo.com
+    - simon@yahoo.com
+    - dave@yahoo.com
+    - matthew@hedgehoganalytics.uk
+    - lee@hedgehoganalytics.uk
+    - rob@hedgehoganalytics.uk
+    - ali@hedgehoganalytics.uk
+    - simon@hedgehoganalytics.uk
+    - dave@hedgehoganalytics.uk
+    - matthew@hmrc.gov.uk
+    - lee@hmrc.gov.uk
+    - rob@hmrc.gov.uk
+    - ali@hmrc.gov.uk
+    - simon@hmrc.gov.uk
+    - dave@hmrc.gov.uk
+  subject:
+    - "Q3 Financial Results"
+    - "Project Phoenix Update"
+    - "Your order has shipped"
+    - "Security Alert"

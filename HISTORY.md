@@ -11,3 +11,7 @@
 
 ## 0.2.0 (2019-05-27)
  - Refactoring
+
+## 0.3.0 (2025-06-30)
+ - Refactoring
+ - Added benchmark and profiling 

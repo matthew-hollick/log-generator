@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2019 Würth Phoenix S.r.l.
+Copyright 2019-2025 Würth Phoenix S.r.l.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from typing import Final
 
-__author__ = """Fedele Mantuano"""
-__email__ = 'mantuano.fedele@gmail.com'
-__version__ = '0.2.0'
+__author__: Final[str] = """Fedele Mantuano"""
+__email__: Final[str] = 'mantuano.fedele@gmail.com'
+__version__: Final[str] = '0.3.0'
 
 
 if __name__ == "__main__":

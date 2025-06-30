@@ -6,4 +6,5 @@
 
 ## Contributors
 
-None yet.
+- Matthew Hollick <matthew@hedgehoganalytics.uk>
+

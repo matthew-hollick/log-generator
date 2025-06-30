@@ -15,15 +15,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+Tests for `rlog_generator` package.
 """
-
-"""Tests for `rlog_generator` package."""
-
 
 import logging
 import os
 import unittest
-
 from click.testing import CliRunner
 
 from rlog_generator import rlog_generator, utils, cli

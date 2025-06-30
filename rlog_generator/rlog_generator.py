@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2019 Würth Phoenix S.r.l.
+Copyright 2019-2025 Würth Phoenix S.r.l.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,19 +14,18 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+Main module for random log generator.
 """
-
-"""Main module."""
-
 
 import glob
 import logging
 import os
 import random
 import time
-
 from concurrent import futures
-
+from pathlib import Path
+from typing import Any, Dict
 from tqdm import trange
 
 from . import utils
@@ -40,21 +39,40 @@ MAX_CONCUR_REQ = 100
 log = logging.getLogger(__name__)
 
 
-def log_generator(pattern_conf):
+def validate_path(path: str) -> None:
+    """Validate that the path is within allowed directories
+    
+    Arguments:
+        path {str} -- Path to validate
+        
+    Raises:
+        ValueError: If path is not in an allowed directory
+    """
+    abs_path = os.path.abspath(path)
+    allowed_dirs = ["/tmp", str(Path.home())]
+    if not any(abs_path.startswith(allowed_dir) for allowed_dir in allowed_dirs):
+        raise ValueError(f"Path {abs_path} is not in an allowed directory")
+
+
+def log_generator(pattern_conf: Dict[str, Any]) -> int:
     """This function generates a random log file from
     configuration pattern
 
     Arguments:
-        pattern_conf {obj} -- Python object of configuration pattern
+        pattern_conf {Dict[str, Any]} -- Python object of configuration pattern
 
     Raises:
         ValueError: raised when generator_type value is not valid
 
     Returns:
-        str -- name of logging pattern
+        int -- number of logs generated
     """
     name = pattern_conf["name"]
     path = pattern_conf["path"]
+    
+    # Validate path for security
+    validate_path(path)
+    
     log_path = os.path.dirname(path)
     log.debug(f"[{name}] - Generating logging for {name}")
     log.debug(f"[{name}] - Generating logging in {path}")
@@ -111,34 +129,67 @@ def log_generator(pattern_conf):
         wait = 0
         elapsed_end = 0
 
-        for i in range_func(nr_logs, **range_kvargs):
-            start = time.time()
-
-            with open(path, "a") as f:
+        # Open file once outside the loop
+        with open(path, "a") as f:
+            for i in range_func(nr_logs, **range_kvargs):
+                start = time.time()
+                
                 template = random.choice(pattern_conf["template"])
                 log_str = utils.get_template_log(template, fields)
                 f.write(log_str + "\n")
+                # Ensure each line is written immediately
+                f.flush()
+                
+                elapsed_first = time.time() - start
 
-            elapsed_first = time.time() - start
-
-            start = time.time()
-            wait = sleep_time - elapsed_first - elapsed_end
-            try:
-                time.sleep(wait)
-            except ValueError:
-                pass
-            finally:
-                elapsed_end = time.time() - start - wait
+                start = time.time()
+                wait = sleep_time - elapsed_first - elapsed_end
+                try:
+                    time.sleep(wait)
+                except ValueError:
+                    pass
+                finally:
+                    elapsed_end = time.time() - start - wait
 
     elif generator_type == RAW:
-        raise NotImplementedError("Generator type 'raw' is not implemented")
+        log.debug(f"[{name}] - Generating logs from raw examples")
+        
+        if "examples" not in pattern_conf or not pattern_conf["examples"]:
+            raise ValueError(f"[{name}] - Generator type 'raw' requires 'examples' field with sample logs")
+            
+        examples = pattern_conf["examples"]
+        
+        # Initial conditions to fix sleep time
+        wait = 0
+        elapsed_end = 0
+        
+        # Open file once outside the loop
+        with open(path, "a") as f:
+            for i in range_func(nr_logs, **range_kvargs):
+                start = time.time()
+                
+                log_str = random.choice(examples)
+                f.write(log_str + "\n")
+                # Ensure each line is written immediately
+                f.flush()
+                
+                elapsed_first = time.time() - start
+                
+                start = time.time()
+                wait = sleep_time - elapsed_first - elapsed_end
+                try:
+                    time.sleep(wait)
+                except ValueError:
+                    pass
+                finally:
+                    elapsed_end = time.time() - start - wait
     else:
         raise ValueError(f"Generator type {generator_type} doesn't exist")
 
     return nr_logs
 
 
-def core(path_patterns, max_concur_req, progress_bar=False):
+def core(path_patterns: str, max_concur_req: int, progress_bar: bool = False) -> int:
     """This function runs the core of tool.
     All threads are generated here. A thread foreach log file.
 
@@ -147,8 +198,8 @@ def core(path_patterns, max_concur_req, progress_bar=False):
         max_concur_req {int} -- max concurrent log generator
         progress_bar {bool} -- enable/disable progress bar
 
-    Keyword Arguments:
-        progress_bar {bool} -- enable/disable progress bar (default: False)
+    Returns:
+        int -- Total number of logs generated
     """
 
     # Load all configuration patterns
