@@ -8,7 +8,7 @@ name: dns
 enabled: true
 
 # path where store the log. If the path doesn't exist will be created
-path: /tmp/dns.log
+path: ./out/dns.log
 
 # remove log file before use it
 remove_file: true
@@ -21,7 +21,7 @@ eps: 2000
 correction: 1.12
 
 # time period in seconds. This value says how many seconds of logs will be generate
-time_period: 1
+time_period: 6
 
 # generator types:
 # - raw: it gets raw logs from examples and uses them to make logging
