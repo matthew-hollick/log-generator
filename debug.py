@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 import traceback
 import logging
+from rlog_generator.cli import main
 
 # Configure detailed logging
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-
-from rlog_generator.cli import main
 
 try:
     main(['-p', 'patterns'])
