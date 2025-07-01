@@ -1,0 +1,5 @@
+[tools]
+uv = 'latest'
+ruff = 'latest'
+glow = "latest"
+github-cli = "latest"

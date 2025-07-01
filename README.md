@@ -23,21 +23,8 @@ cd log-generator
 
 # Create a virtual environment and install dependencies
 uv venv
-uv pip install -e .
-```
-
-### Using pip
-
-```bash
-pip install rlog-generator
-```
-
-### From source
-
-```bash
-git clone https://github.com/WuerthPhoenix/log-generator.git
-cd log-generator
-pip install -e .
+source .venv/bin/activate
+uv sync
 ```
 
 ## Pattern file
@@ -68,6 +55,7 @@ The `func` fields start with `func_` and then have the name of function. It can 
 The `func` developed are:
 
 ### Basic Functions
+These functions were defined in the upstream project and have been kept for compatibility.
 
 - `func_randip`: generate a random ip address
 - `func_randint`: generate a random integer from _min_ to _max_
@@ -144,7 +132,7 @@ You can also use these functions within lists for random selection:
 ```yaml
 fields:
   user:
-    - "-"  # Anonymous user
+    - "-"             # Anonymous user
     - func_fake_user  # Will be evaluated as a function
   status:
     - "active"
@@ -156,29 +144,12 @@ For more examples, see the pattern files in the [patterns](patterns) folder.
 
 If you want to contribute with real templates, add them in [patterns](patterns) folder.
 
-## Performance and Realism Considerations
-
-### Advantages of Faker Functions
+## Advantages of Faker Functions
 
 - **Realistic Data**: Faker functions generate data that closely resembles real-world values, improving testing quality
 - **Consistency**: Related data fields maintain logical relationships (e.g., usernames match email patterns)
 - **Diversity**: Wide variety of data types covers most common log fields
 - **Deterministic**: Seeded for reproducible results while maintaining randomness
-
-### Performance Optimization
-
-The Faker integration is designed for maximum performance:
-
-- Single global Faker instance to minimize overhead
-- Function results are cached when possible
-- Direct function aliases avoid complex lookup logic
-- Minimal string parsing during template rendering
-
-For high-volume log generation (>10,000 EPS), consider:
-
-1. Pre-generating common values in memory
-2. Using simpler functions for performance-critical fields
-3. Profiling to identify bottlenecks in your specific patterns
 
 ## Command line
 
@@ -207,31 +178,6 @@ Options:
 - Random logging from template
 - Template can be a list of multiple formats
 - Generate logs from raw examples
-- Path validation for security
-- Modern dependency management with UV
-- Type hints throughout the codebase
-- Improved error handling
-
-## Development
-
-### Setup Development Environment
-
-```bash
-uv venv
-uv pip install -e ".[dev]"
-```
-
-### Running Tests
-
-```bash
-pytest
-```
-
-### Type Checking
-
-```bash
-mypy rlog_generator
-```
 
 ## Apache 2 Open Source License
 
