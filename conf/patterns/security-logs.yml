@@ -2,7 +2,7 @@ name: security_logs
 enabled: true
 path: ./out/security_logs.log
 eps: 5
-time_period: 6
+time_period: 600
 generator_type: template
 template:
   - '{:%Y-%m-%dT%H:%M:%S.%f} {hostname} {process}[{pid}]: {log_level}: Authentication {auth_result} for user {username} from {source_ip} port {source_port} ssh2 {auth_method}'

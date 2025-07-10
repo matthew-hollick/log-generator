@@ -21,7 +21,7 @@ eps: 2000
 correction: 1.12
 
 # time period in seconds. This value says how many seconds of logs will be generate
-time_period: 6
+time_period: 600
 
 # generator types:
 # - raw: it gets raw logs from examples and uses them to make logging

@@ -2,8 +2,16 @@ name: exchange_message_tracking
 enabled: true
 path: ./out/exchange_message_tracking.log
 eps: 10
-time_period: 6
-generator_type: template
+time_period: 600
+generator_type: raw
+examples:
+  - '2025-07-10T10:01:04.409970Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,DELIVER,10000,<msg0@contoso.com>,63058876-48d7-4cf8-bc44-b1bdfe8cd6bf,user0@example.com,Delivered,16152,1,,,Test Message 0,sender0@contoso.com,<sender0@contoso.com>,,Originating,2e10ff35-5484-4cba-b127-1d5722600107,192.168.1.10,10.0.0.5,X-Custom-Header:Test; X-Attachment-Present:true,Email,9ed48152-b5a3-418f-8b90-722ab127348a,15.1.2308.8'
+  - '2025-07-10T10:00:04.410101Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,RECEIVE,10001,<msg1@contoso.com>,62797764-f448-4fc1-9594-5d5915c818e3,user1@example.com,Delivered,10026,1,,,Test Message 1,sender1@contoso.com,<sender1@contoso.com>,,Originating,5d3d9ba1-30d0-47f3-bfb6-e9a602521e7e,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,f5af12dd-2370-43ce-85a3-cfe0ae72ebcc,15.1.2308.8'
+  - '2025-07-10T09:59:04.410358Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,SEND,10002,<msg2@contoso.com>,f84c2612-3838-4b29-a0e7-28d2ceeec48f,user2@example.com,Delivered,14898,1,,,Test Message 2,sender2@contoso.com,<sender2@contoso.com>,,Originating,e3a9ec17-a0a8-4bba-bf28-a4c066f48823,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,642ea6e9-52dd-49f5-9afb-dbd2f04f2f28,15.1.2308.8'
+  - '2025-07-10T09:58:04.410413Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,RECEIVE,10003,<msg3@contoso.com>,4ff58276-7f27-4bcd-96b4-bbf6441219b3,user3@example.com,Delivered,7002,1,,,Test Message 3,sender3@contoso.com,<sender3@contoso.com>,,Originating,d01ddc42-590d-4b9e-b664-34e53aabcfb0,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,e13967ce-1728-4c78-8a39-58862c3039f5,15.1.2308.8'
+  - '2025-07-10T09:57:04.410450Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,DELIVER,10004,<msg4@contoso.com>,43489368-54d1-43d6-a7e6-8ed155f6e5a2,user4@example.com,Delivered,9210,1,,,Test Message 4,sender4@contoso.com,<sender4@contoso.com>,,Originating,2baa5d53-f65c-41c7-a493-e2fe0710859e,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,073b889a-398c-47f8-b332-3a54d247201b,15.1.2308.8'
+  - '2025-07-10T09:56:04.410508Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,DELIVER,10005,<msg5@contoso.com>,0ea6b382-003c-47b6-9926-e5ac48993f27,user5@example.com,Delivered,13510,1,,,Test Message 5,sender5@contoso.com,<sender5@contoso.com>,,Originating,a5453046-6b6d-4146-9965-235becaebecc,192.168.1.10,10.0.0.5,X-Custom-Header:Test; X-Attachment-Present:true,Email,59b2fdc5-cf71-49df-90a2-0380cfae7667,15.1.2308.8'
+  - '2025-07-10T09:55:04.410530Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,SEND,10006,<msg6@contoso.com>,c509cd79-6470-49e1-a2f4-b73d02aecd4c,user6@example.com,Delivered,18159,1,,,Test Message 6,sender6@contoso.com,<sender6@contoso.com>,,Originating,1747481a-b111-4bf0-b5e6-990dec365a36,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,d2d3e73a-988f-44f5-9657-bd8dd0ed5ffa,15.1.2308.8'
 template:
   - '{:%Y-%m-%dT%H:%M:%S.%f},{client_ip},{server_hostname},{server_ip},,{connector_id},{source},{event_id},{internal_message_id},{message_id},{recipient_address},,{recipient_status},{total_bytes},{msg_id},{sender_address},,{subject},,,'
 fields:
@@ -42,9 +50,9 @@ fields:
     - lee@bbc.co.uk
     - rob@bbc.co.uk
     - ali@bbc.co.uk
-    - simon@bbc.co.uk
+    - simon@eurostar.com
     - dave@bbc.co.uk
-    - matthew@yahoo.com
+    - bob.t.builder@yahoo.com
     - lee@yahoo.com
     - rob@yahoo.com
     - ali@yahoo.com
