@@ -1,0 +1,35 @@
+name: web_server_logs
+enabled: true
+path: ./out/web_server_logs.log
+eps: 10
+time_period: 600
+generator_type: template
+template:
+  - '{:%Y-%m-%dT%H:%M:%S.%f} {client_ip} - {user} "{http_method} {url_path} HTTP/1.1" {status_code} {bytes} "{referrer}" "{user_agent}"'
+  - '{:%Y-%m-%dT%H:%M:%S.%f} {client_ip} - - [{server_time}] "{http_method} {url_path} HTTP/1.1" {status_code} {bytes} {response_time} "{referrer}" "{user_agent}" {country_code}'
+fields:
+  client_ip: func_fake_ip
+  user:
+    - "-"
+    - func_fake_user
+  http_method: func_fake_http_method
+  url_path:
+    - "/api/v1/users"
+    - "/api/v1/products"
+    - "/login"
+    - "/logout"
+    - "/dashboard"
+    - "/static/main.css"
+    - "/static/app.js"
+    - "/images/logo.png"
+  status_code: func_fake_http_status_code
+  bytes: func_randint 100 15000
+  server_time: func_format_date "%d/%b/%Y:%H:%M:%S %z"
+  response_time: func_randint 1 1500
+  referrer:
+    - "https://www.google.com"
+    - "https://www.bing.com"
+    - "-"
+    - "https://example.com/landing"
+  user_agent: func_fake_user_agent
+  country_code: func_fake_country_code

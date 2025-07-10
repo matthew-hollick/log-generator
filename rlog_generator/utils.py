@@ -245,17 +245,17 @@ def fake_country_code() -> str:
 
 
 def format_date(*args) -> str:
-    """Format current date with given format string
+    """Format current date with given format string in UTC
     
     Arguments:
         *args -- First argument is used as format string, rest ignored
         
     Returns:
-        str -- Formatted date string
+        str -- Formatted date string in UTC
     """
     if not args:
-        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return datetime.datetime.now().strftime(args[0])
+        return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.datetime.now(datetime.timezone.utc).strftime(args[0])
 
 
 FunctionType = TypeVar('FunctionType', bound=Callable[..., Any])

@@ -15,7 +15,7 @@ examples:
 template:
   - '{date-time},{client-ip},{client-hostname},{server-ip},{server-hostname},{source-context},{connector-id},{source},{event-id},{internal-message-id},{message-id},{network-message-id},{recipient-address},{recipient-status},{total-bytes},{recipient-count},{related-recipient-address},{reference},{message-subject},{sender-address},{return-path},{message-info},{directionality},{tenant-id},{original-client-ip},{original-server-ip},{custom-data},{transport-traffic-type},{log-id},{schema-version}'
 fields:
-  date-time: func_format_date %Y-%m-%dT%H:%M:%S.%f
+  date-time: func_format_date "%Y-%m-%dT%H:%M:%S.%f"
   client-ip: func_randip
   client-hostname: func_fake_hostname
   server-ip: func_randip
