@@ -353,7 +353,16 @@ def exec_function_str(function_str: str) -> Any:
         Any -- value of string function
     """
     try:
+        # Check for empty function string
+        if not function_str or function_str.strip() == "":
+            log.error("Empty function string provided")
+            return ""
+            
         tokens = function_str.split()
+        if not tokens:  # Additional check for empty tokens list
+            log.error("No function tokens found")
+            return ""
+            
         func_name = tokens[0]
         
         # Debug logging
@@ -383,7 +392,11 @@ def get_random_value(field_value: Union[str, List[Any]]) -> Any:
         Any -- random value
     """
     if isinstance(field_value, str):
-        return exec_function_str(field_value)
+        # Only treat as function if it starts with func_ prefix
+        if field_value.startswith('func_'):
+            return exec_function_str(field_value)
+        # Otherwise return the string as is
+        return field_value
     elif isinstance(field_value, list):
         # Get a random choice from the list
         choice = random.choice(field_value)
