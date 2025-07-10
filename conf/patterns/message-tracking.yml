@@ -23,13 +23,12 @@ fields:
     - EXSVR01
     - EXSVR02
   source-context:
-    - SMTP:Inbound
-    - SMTP:Outbound
-    - StoreDriver:Submission
+    - CatContentConversion
+    - 250 2.0.0 OK;ClientSubmitTime:<UTC>
   connector-id:
-    - "Default Frontend EXSVR01"
-    - "Client Frontend EXSVR02"
-    - "Outbound to Office 365"
+    - Default Frontend EXSVR01
+    - Client Frontend EXSVR02
+    - Outbound to Office 365
   source:
     - STOREDRIVER
     - SMTP
@@ -47,10 +46,10 @@ fields:
     - DEFER
   internal-message-id: func_randint 1000000000000 9999999999999
   message-id:
-    - "<1688077233.a1b2c3d4e5@bbc.co.uk>"
-    - "<SNT151-W69A9B8C7D6E5F4A3B2C1D0E9F90@yahoo.com>"
-    - "<DB8PR05MB62224B9A8C7D6E5F4A3B2C1D0@hedgehoganalytics.uk>"
-    - "<VI1PR0101MB1234567890ABCDEF@hmrc.gov.uk>"
+    - <1688077233.a1b2c3d4e5@bbc.co.uk>
+    - <SNT151-W69A9B8C7D6E5F4A3B2C1D0E9F90@yahoo.com>
+    - <DB8PR05MB62224B9A8C7D6E5F4A3B2C1D0@hedgehoganalytics.uk>
+    - <VI1PR0101MB1234567890ABCDEF@hmrc.gov.uk>
   network-message-id: func_fake_uuid
   recipient-address:
     - matthew@bbc.co.uk
@@ -78,9 +77,9 @@ fields:
     - simon@hmrc.gov.uk
     - dave@hmrc.gov.uk
   recipient-status:
-    - "250 2.1.5 Recipient OK"
-    - "550 5.1.1 User unknown"
-    - "451 4.4.0 Primary target IP address responded with..."
+    - 250 2.1.5 Recipient OK
+    - 550 5.1.1 User unknown
+    - 451 4.4.0 Primary target IP address responded with...
   total-bytes: func_randint 500 2048000
   recipient-count: func_randint 1 5
   related-recipient-address: ""
@@ -117,17 +116,18 @@ fields:
     - dave@hmrc.gov.uk
   return-path: ""
   message-info:
-    - " "
-    - "<sender@example.com>"
+    - ""
+    - <sender@example.com>
   directionality:
     - Originating
     - Incoming
+    - Undefined
   tenant-id: func_fake_uuid
   original-client-ip: func_randip
   original-server-ip: func_randip
   custom-data:
-    - "X-Custom-Header:Test; X-Attachment-Present:true"
-    - " "
+    - X-Custom-Header:Test; X-Attachment-Present:true
+    - ""
   transport-traffic-type:
     - Email
   log-id: func_fake_uuid
