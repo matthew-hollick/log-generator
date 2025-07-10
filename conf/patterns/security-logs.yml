@@ -5,10 +5,11 @@ eps: 5
 time_period: 600
 generator_type: template
 template:
-  - '{:%Y-%m-%dT%H:%M:%S.%f} {hostname} {process}[{pid}]: {log_level}: Authentication {auth_result} for user {username} from {source_ip} port {source_port} ssh2 {auth_method}'
-  - '{:%Y-%m-%dT%H:%M:%S.%f} {hostname} {process}[{pid}]: {log_level}: Failed password for invalid user {username} from {source_ip} port {source_port} ssh2'
-  - '{:%Y-%m-%dT%H:%M:%S.%f} {hostname} {firewall}[{pid}]: {log_level}: {action} {protocol} connection from {source_ip}:{source_port} to {dest_ip}:{dest_port} flags {flags} on interface {interface}'
+  - '{date-time} {hostname} {process}[{pid}]: {log_level}: Authentication {auth_result} for user {username} from {source_ip} port {source_port} ssh2 {auth_method}'
+  - '{date-time} {hostname} {process}[{pid}]: {log_level}: Failed password for invalid user {username} from {source_ip} port {source_port} ssh2'
+  - '{date-time} {hostname} {firewall}[{pid}]: {log_level}: {action} {protocol} connection from {source_ip}:{source_port} to {dest_ip}:{dest_port} flags {flags} on interface {interface}'
 fields:
+  date-time: func_format_date %Y-%m-%dT%H:%M:%S.%f
   hostname: func_fake_hostname
   process: func_fake_process_name
   pid: func_randint 1000 65535

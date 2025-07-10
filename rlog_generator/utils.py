@@ -395,7 +395,7 @@ def get_random_value(field_value: Union[str, List[Any]]) -> Any:
         # Only treat as function if it starts with func_ prefix
         if field_value.startswith('func_'):
             return exec_function_str(field_value)
-        # Otherwise return the string as is
+        # Otherwise, return the string as is
         return field_value
     elif isinstance(field_value, list):
         # Get a random choice from the list
