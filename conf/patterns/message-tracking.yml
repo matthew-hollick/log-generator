@@ -3,7 +3,7 @@ enabled: true
 path: ./out/exchange_message_tracking.log
 eps: 10
 time_period: 600
-generator_type: raw
+generator_type: template
 examples:
   - '2025-07-10T10:01:04.409970Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,DELIVER,10000,<msg0@contoso.com>,63058876-48d7-4cf8-bc44-b1bdfe8cd6bf,user0@example.com,Delivered,16152,1,,,Test Message 0,sender0@contoso.com,<sender0@contoso.com>,,Originating,2e10ff35-5484-4cba-b127-1d5722600107,192.168.1.10,10.0.0.5,X-Custom-Header:Test; X-Attachment-Present:true,Email,9ed48152-b5a3-418f-8b90-722ab127348a,15.1.2308.8'
   - '2025-07-10T10:00:04.410101Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,RECEIVE,10001,<msg1@contoso.com>,62797764-f448-4fc1-9594-5d5915c818e3,user1@example.com,Delivered,10026,1,,,Test Message 1,sender1@contoso.com,<sender1@contoso.com>,,Originating,5d3d9ba1-30d0-47f3-bfb6-e9a602521e7e,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,f5af12dd-2370-43ce-85a3-cfe0ae72ebcc,15.1.2308.8'
@@ -13,14 +13,20 @@ examples:
   - '2025-07-10T09:56:04.410508Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,DELIVER,10005,<msg5@contoso.com>,0ea6b382-003c-47b6-9926-e5ac48993f27,user5@example.com,Delivered,13510,1,,,Test Message 5,sender5@contoso.com,<sender5@contoso.com>,,Originating,a5453046-6b6d-4146-9965-235becaebecc,192.168.1.10,10.0.0.5,X-Custom-Header:Test; X-Attachment-Present:true,Email,59b2fdc5-cf71-49df-90a2-0380cfae7667,15.1.2308.8'
   - '2025-07-10T09:55:04.410530Z,192.168.1.10,mail.contoso.com,10.0.0.5,EXCH01.contoso.com,SMTP:Inbound,Default EXCH Inbound,SMTP,SEND,10006,<msg6@contoso.com>,c509cd79-6470-49e1-a2f4-b73d02aecd4c,user6@example.com,Delivered,18159,1,,,Test Message 6,sender6@contoso.com,<sender6@contoso.com>,,Originating,1747481a-b111-4bf0-b5e6-990dec365a36,192.168.1.10,10.0.0.5,X-Custom-Header:Test,Email,d2d3e73a-988f-44f5-9657-bd8dd0ed5ffa,15.1.2308.8'
 template:
-  - '{:%Y-%m-%dT%H:%M:%S.%f},{client_ip},{server_hostname},{server_ip},,{connector_id},{source},{event_id},{internal_message_id},{message_id},{recipient_address},,{recipient_status},{total_bytes},{msg_id},{sender_address},,{subject},,,'
+  - '{date-time},{client-ip},{client-hostname},{server-ip},{server-hostname},{source-context},{connector-id},{source},{event-id},{internal-message-id},{message-id},{network-message-id},{recipient-address},{recipient-status},{total-bytes},{recipient-count},{related-recipient-address},{reference},{message-subject},{sender-address},{return-path},{message-info},{directionality},{tenant-id},{original-client-ip},{original-server-ip},{custom-data},{transport-traffic-type},{log-id},{schema-version}'
 fields:
-  client_ip: func_randip
-  server_hostname:
+  date-time: func_format_date "%Y-%m-%dT%H:%M:%S.%f"
+  client-ip: func_randip
+  client-hostname: func_fake_hostname
+  server-ip: func_randip
+  server-hostname:
     - EXSVR01
     - EXSVR02
-  server_ip: func_randip
-  connector_id:
+  source-context:
+    - SMTP:Inbound
+    - SMTP:Outbound
+    - StoreDriver:Submission
+  connector-id:
     - "Default Frontend EXSVR01"
     - "Client Frontend EXSVR02"
     - "Outbound to Office 365"
@@ -30,7 +36,7 @@ fields:
     - ROUTING
     - AGENT
     - DSN
-  event_id:
+  event-id:
     - RECEIVE
     - SEND
     - DELIVER
@@ -39,13 +45,14 @@ fields:
     - EXPAND
     - RESOLVE
     - DEFER
-  internal_message_id: func_randint 1000000000000 9999999999999
-  message_id:
+  internal-message-id: func_randint 1000000000000 9999999999999
+  message-id:
     - "<1688077233.a1b2c3d4e5@bbc.co.uk>"
     - "<SNT151-W69A9B8C7D6E5F4A3B2C1D0E9F90@yahoo.com>"
     - "<DB8PR05MB62224B9A8C7D6E5F4A3B2C1D0@hedgehoganalytics.uk>"
     - "<VI1PR0101MB1234567890ABCDEF@hmrc.gov.uk>"
-  recipient_address:
+  network-message-id: func_fake_uuid
+  recipient-address:
     - matthew@bbc.co.uk
     - lee@bbc.co.uk
     - rob@bbc.co.uk
@@ -70,13 +77,20 @@ fields:
     - ali@hmrc.gov.uk
     - simon@hmrc.gov.uk
     - dave@hmrc.gov.uk
-  recipient_status:
+  recipient-status:
     - "250 2.1.5 Recipient OK"
     - "550 5.1.1 User unknown"
     - "451 4.4.0 Primary target IP address responded with..."
-  total_bytes: func_randint 500 2048000
-  msg_id: func_randint 1000000000000 9999999999999
-  sender_address:
+  total-bytes: func_randint 500 2048000
+  recipient-count: func_randint 1 5
+  related-recipient-address: ""
+  reference: ""
+  message-subject:
+    - "Q3 Financial Results"
+    - "Project Phoenix Update"
+    - "Your order has shipped"
+    - "Security Alert"
+  sender-address:
     - matthew@bbc.co.uk
     - lee@bbc.co.uk
     - rob@bbc.co.uk
@@ -101,8 +115,20 @@ fields:
     - ali@hmrc.gov.uk
     - simon@hmrc.gov.uk
     - dave@hmrc.gov.uk
-  subject:
-    - "Q3 Financial Results"
-    - "Project Phoenix Update"
-    - "Your order has shipped"
-    - "Security Alert"
+  return-path: ""
+  message-info:
+    - " "
+    - "<sender@example.com>"
+  directionality:
+    - Originating
+    - Incoming
+  tenant-id: func_fake_uuid
+  original-client-ip: func_randip
+  original-server-ip: func_randip
+  custom-data:
+    - "X-Custom-Header:Test; X-Attachment-Present:true"
+    - " "
+  transport-traffic-type:
+    - Email
+  log-id: func_fake_uuid
+  schema-version: "15.1.2308.8"
