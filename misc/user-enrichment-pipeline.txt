@@ -1,0 +1,82 @@
+# Create the orgaisation lookup index
+# Elasticsearch does not allow for unique keys, this index must be manually controlled - hence why I'm designating a doc id for each entry which might be overkill but it makes one stop and think.
+POST /organisations/_doc/1?refresh=wait_for
+{
+  "domain": "google.com",
+  "organisation": "company",
+  "country": "USA",
+  "location": "Somewhere in LA"
+}
+
+# Create the enrichment policy
+# It is strongly recommended that enrichment policies are not updated but replaced, hence the numeric version in the policy name
+PUT /_enrich/policy/organisation_by_domain_v1
+{
+  "match": {
+    "indices": "organisations",
+    "match_field": "domain",
+    "enrich_fields": [ "location", "country", "organisation" ]
+  }
+}
+
+# Start the enrichment policy
+POST /_enrich/policy/organisation_by_domain_v1/_execute?wait_for_completion=false
+
+# Create the ingest pipeline
+# Elastic provided ingest pipeline load an optional "@custom" suffixed pipeline in the last step. 
+# we take advantage of that here to extend the messagetracking pipeline.
+# the painless scripting langage is far from it.
+PUT _ingest/pipeline/logs-microsoft_exchange_server.messagetracking@custom
+{
+  "description": "Enrich records with organisation details regarding the origin of the email.",
+  "processors": [
+    {
+      "script": {
+        "lang": "painless",
+        "source": "if (ctx.email?.from?.address instanceof List && ctx.email.from.address.size() > 0) { ctx._tmp = ctx.containsKey('_tmp') ? ctx._tmp : [:]; ctx._tmp.email = ctx._tmp.containsKey('email') ? ctx._tmp.email : [:]; ctx._tmp.email.from = ctx._tmp.email.containsKey('from') ? ctx._tmp.email.from : [:]; ctx._tmp.email.from.address = ctx.email.from.address[0];}\n",
+        "description": "Copy the from address to a tmp location, make it a string"
+      }
+    },
+    {
+      "dissect": {
+        "field": "_tmp.email.from.address",
+        "pattern": "%{email.from.username}@%{email.from.domain}",
+        "description": "Extract username and domain"
+      }
+    },
+    {
+      "enrich": {
+        "field": "email.from.domain",
+        "policy_name": "entity_lookup_enrich_policy_3",
+        "target_field": "_tmp.email.from",
+        "description": "Enrich based on domain"
+      }
+    },
+    {
+      "set": {
+        "field": "_tmp.email.from.country",
+        "value": "undefined",
+        "if": "ctx._tmp?.email?.from == null || ctx._tmp.email.from.country == null",
+        "description": "if an unknown domain set country to \"undefined\""
+      }
+    },
+    {
+      "script": {
+        "lang": "painless",
+        "source": "if (ctx.containsKey('_tmp') && ctx._tmp.containsKey('email') && ctx._tmp.email.containsKey('from')) {ctx.email = ctx.containsKey('email') ? ctx.email : [:]; ctx.email.from = ctx.email.containsKey('from') ? ctx.email.from : [:]; for (entry in ctx._tmp.email.from.entrySet()) { ctx.email.from[entry.getKey()] = entry.getValue(); } ctx._tmp.email.remove('from'); if (ctx._tmp.email.isEmpty()) { ctx._tmp.remove('email'); } if (ctx._tmp.isEmpty()) { ctx.remove('_tmp'); } }",
+        "description": "copy enriched fields into place. delete tmp data"
+      }
+    }
+  ],
+  "on_failure": [
+    {
+      "set": {
+        "field": "error_information",
+        "value": "Processor {{ _ingest.on_failure_processor_type }} with tag {{ _ingest.on_failure_processor_tag }} in pipeline {{ _ingest.on_failure_pipeline }} failed with message {{ _ingest.on_failure_message }}"
+      }
+    }
+  ]
+}
+
+# Finally, make a copy of the exchange message tracking dashboard and tag it appropriately.
+# Add the field "email.from.country" to the table.

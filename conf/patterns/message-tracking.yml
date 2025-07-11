@@ -91,29 +91,9 @@ fields:
     - "Security Alert"
   sender-address:
     - matthew@bbc.co.uk
-    - lee@bbc.co.uk
-    - rob@bbc.co.uk
-    - ali@bbc.co.uk
-    - simon@bbc.co.uk
-    - dave@bbc.co.uk
     - matthew@yahoo.com
-    - lee@yahoo.com
-    - rob@yahoo.com
-    - ali@yahoo.com
-    - simon@yahoo.com
-    - dave@yahoo.com
     - matthew@hedgehoganalytics.uk
-    - lee@hedgehoganalytics.uk
-    - rob@hedgehoganalytics.uk
-    - ali@hedgehoganalytics.uk
-    - simon@hedgehoganalytics.uk
-    - dave@hedgehoganalytics.uk
     - matthew@hmrc.gov.uk
-    - lee@hmrc.gov.uk
-    - rob@hmrc.gov.uk
-    - ali@hmrc.gov.uk
-    - simon@hmrc.gov.uk
-    - dave@hmrc.gov.uk
   return-path: ""
   message-info:
     - ""
